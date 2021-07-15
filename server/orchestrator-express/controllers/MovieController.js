@@ -1,17 +1,29 @@
 const axios = require('axios')
+const Redis = require("ioredis");
+const redis = new Redis();
 
 let baseUrl = 'http://localhost:4001/movies'
 class MovieController {
     static findAllMovies(req, res) {
-        axios({
-            url: `${baseUrl}`,
-            method: 'get'
-        })
-        .then(({data}) => {
-            res.status(200).json(data)
-        })
-        .catch(err => {
-            console.log(err)       
+        redis.get("movies")
+        .then(movies => {
+            if (movies) {
+                // console.log('REDIS')
+                res.status(200).json(JSON.parse(movies))
+            } else {
+                // console.log('TIDAK REDIS')
+                axios({
+                    url: `${baseUrl}`,
+                    method: 'get'
+                })
+                .then(({data}) => {
+                    redis.set("movies", JSON.stringify(data))
+                    res.status(200).json(data)
+                })
+                .catch(err => {
+                    console.log(err)       
+                })
+            }
         })
     }
 
@@ -23,6 +35,7 @@ class MovieController {
             data: movie
         })
         .then(({data}) => {
+            redis.del("movies")
             res.status(201).json({message: `Success adding movie ${movie.title}`, data: data})
         })
         .catch(err => {
@@ -37,6 +50,7 @@ class MovieController {
             method: 'delete'
         })
         .then(({data}) => {
+            redis.del("movies")
             res.status(201).json({message: `Success deleting movie with ID ${id}`, data: data})
         })
         .catch(err => {
@@ -53,6 +67,7 @@ class MovieController {
             data: updated
         })
         .then(({data}) => {
+            redis.del("movies")
             res.status(201).json({message: `Success updating ${updated.title}`, data: data})
         })
         .catch(err => {

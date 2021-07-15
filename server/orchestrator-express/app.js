@@ -2,9 +2,7 @@ const express = require('express')
 const axios = require('axios')
 const app = express()
 const port = 4000
-const router = require('./routes/index.js')
-const MovieController = require('./controllers/MovieController')
-const SeriesController = require('./controllers/SeriesController')
+const router = require('./routes/entertainme.js')
 
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
