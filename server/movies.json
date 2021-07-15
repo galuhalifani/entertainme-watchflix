@@ -1,0 +1,16 @@
+[
+    {
+        "title": "Harry Potter and the Sorcerer's Stone",
+        "overview": "An orphaned boy enrolls in a school of wizardry, where he learns the truth about himself, his family and the terrible evil that haunts the magical world",
+        "poster_path": "https://m.media-amazon.com/images/M/MV5BNjQ3NWNlNmQtMTE5ZS00MDdmLTlkZjUtZTBlM2UxMGFiMTU3XkEyXkFqcGdeQXVyNjUwNzk3NDc@._V1_.jpg",
+        "popularity": 7.6,
+        "tags": ["Harry Potter", "Fantasy", "Wizardry", "Magic"]
+    },
+    {
+        "title": "Love Story (1970)",
+        "overview": "A boy and a girl from different backgrounds fall in love regardless of their upbringing - and then tragedy strikes",
+        "poster_path": "https://m.media-amazon.com/images/M/MV5BZmFjYWU1MGQtM2FiMi00YjA3LWIwYjUtZDdhYWEyOWFhZGE0XkEyXkFqcGdeQXVyMjI4MjA5MzA@._V1_.jpg",
+        "popularity": 6.9,
+        "tags": ["Love", "Romance", "Classic", "Harvard", "Sad", "Tragic"]
+    }
+]

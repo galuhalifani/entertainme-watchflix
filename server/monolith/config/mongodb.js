@@ -2,6 +2,8 @@ const { MongoClient } = require("mongodb");
 
 const url = 'mongodb://localhost:27017'
 
+let database = null
+
 async function connect() {
     const client = new MongoClient(url)
 
@@ -11,12 +13,17 @@ async function connect() {
     await client.connect()
 
     const db = client.db(dbName)
-    const movieCollection = db.collection('movies')
-    const tvCollection = db.collection('tv_series')
+
+    database = db
 
     return db
 }
 
-modeul.exports = {
-    connect
+function getDatabase() {
+    return database
+}
+
+module.exports = {
+    connect,
+    getDatabase
 }
