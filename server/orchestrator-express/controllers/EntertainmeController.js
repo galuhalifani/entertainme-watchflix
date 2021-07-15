@@ -21,7 +21,7 @@ class Controller {
         })
         .then(({data}) => {
             series = data
-            res.status(200).json({movies: movies, series: series})
+            res.status(200).json({movies: movies, tvSeries: series})
         })
         .catch(err => {
             console.log(err)       
