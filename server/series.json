@@ -5,5 +5,18 @@
         "poster_path": "https://m.media-amazon.com/images/M/MV5BNjg1MDQ5MjQ2N15BMl5BanBnXkFtZTYwNjI5NjA3._V1_.jpg",
         "popularity": 8.3,
         "tags": ["Comedy", "Series", "Drama", "Romance", "New York"]
-    }
+    },
+    {
+        "title": "Homeland",
+        "overview": "A bipolar CIA operative becomes convinced a prisoner of war has been turned by al-Qaeda and is planning to carry out a terrorist attack on American soil",
+        "poster_path": "https://m.media-amazon.com/images/M/MV5BMjA4MWM1OWQtMDdlMS00MmE4LWI2YTItODhhMGI5NTg0ODFhXkEyXkFqcGdeQXVyOTA3MTMyOTk@._V1_.jpg",
+        "popularity": 8.3,
+        "tags": [
+        "Crime",
+        "Drama",
+        "Mystery",
+        "Thriller",
+        "Politics"
+        ]
+        }
 ]

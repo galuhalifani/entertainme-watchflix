@@ -1,7 +1,8 @@
 {
-  "name": "orchestrator-express",
+  "name": "services",
   "version": "1.0.0",
-  "main": "app.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -9,9 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.1",
-    "express": "^4.17.1"
-  },
-  "devDependencies": {},
-  "description": ""
+    "express": "^4.17.1",
+    "mongodb": "^4.0.0"
+  }
 }

@@ -1,0 +1,64 @@
+const axios = require('axios')
+
+let baseUrl = 'http://localhost:4001/movies'
+class MovieController {
+    static findAllMovies(req, res) {
+        axios({
+            url: `${baseUrl}`,
+            method: 'get'
+        })
+        .then(({data}) => {
+            res.status(200).json(data)
+        })
+        .catch(err => {
+            console.log(err)       
+        })
+    }
+
+    static addMovies(req, res) {
+        let movie = req.body
+        axios({
+            url: `${baseUrl}`,
+            method: 'post',
+            data: movie
+        })
+        .then(({data}) => {
+            res.status(201).json({message: `Success adding movie ${movie.title}`, data: data})
+        })
+        .catch(err => {
+            console.log(err)       
+        })
+    }
+
+    static deleteMovie(req, res) {
+        let id = req.params.id
+        axios({
+            url: `${baseUrl}/${id}`,
+            method: 'delete'
+        })
+        .then(({data}) => {
+            res.status(201).json({message: `Success deleting movie with ID ${id}`, data: data})
+        })
+        .catch(err => {
+            console.log(err)       
+        })
+    }
+
+    static editMovie(req, res) {
+        let id = req.params.id
+        let updated = req.body
+        axios({
+            url: `${baseUrl}/${id}`,
+            method: 'put',
+            data: updated
+        })
+        .then(({data}) => {
+            res.status(201).json({message: `Success updating ${updated.title}`, data: data})
+        })
+        .catch(err => {
+            console.log(err)       
+        })
+    }
+}
+
+module.exports = MovieController
