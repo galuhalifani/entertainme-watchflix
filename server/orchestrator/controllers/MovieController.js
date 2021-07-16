@@ -31,8 +31,35 @@ class MovieController {
         })
     }
 
-    static addMovies() {
-        let movie = req.body
+    static findOneMovie(id) {
+        return redis.get(`movies-${id}`)
+        .then(movie => {
+            if (movie) {
+                // console.log('PAKE REDIS')
+                return JSON.parse(movie)
+            } else {
+                // console.log('GA PAKE REDIS')
+                return axios({
+                    url: `${baseUrl}/${id}`,
+                    method: 'get'
+                })
+                .then(({data}) => {
+                    redis.set(`movies-${id}`, JSON.stringify(data))
+                    console.log(data)
+                    return data
+                })
+                .catch(err => {
+                    return err   
+                })
+            }
+        })
+        .catch(err => {
+            return err
+        })
+    }
+
+    static addMovies(newMovie) {
+        let movie = newMovie
         return axios({
             url: `${baseUrl}`,
             method: 'post',
@@ -40,39 +67,71 @@ class MovieController {
         })
         .then(({data}) => {
             redis.del("movies")
-            return {message: `Success adding movie ${movie.title}`, data: data}
+            let newData = {
+                _id: data.insertedId,
+                title: movie.title,
+                overview: movie.overview,
+                poster_path: movie.poster_path,
+                popularity: movie.popularity,
+                tags: movie.tags
+            }
+            return newData
         })
         .catch(err => {
             console.log(err)       
+            return err
         })
     }
 
-    static deleteMovie() {
-        let id = req.params.id
-        axios({
-            url: `${baseUrl}/${id}`,
-            method: 'delete'
-        })
-        .then(({data}) => {
+    static deleteMovie(movieId) {
+        let id = movieId
+        let deletedMovie;
+        return MovieController.findOneMovie(id)
+        .then((data) => {
+            if (data) {
+                // console.log(data)
+                deletedMovie = data
+                return axios({
+                    url: `${baseUrl}/${id}`,
+                    method: 'delete'
+                })    
+            }
+        })  
+        .then(() => {
             redis.del("movies")
-            res.status(201).json({message: `Success deleting movie with ID ${id}`, data: data})
+            redis.del(`movies-${id}`)
+            return deletedMovie
         })
         .catch(err => {
             console.log(err)       
+            return err
         })
     }
 
-    static editMovie() {
-        let id = req.params.id
-        let updated = req.body
-        axios({
+    static editMovie(editedMovie, movieId) {
+        let id = movieId
+        let updated = editedMovie
+        return axios({
             url: `${baseUrl}/${id}`,
             method: 'put',
             data: updated
         })
         .then(({data}) => {
             redis.del("movies")
-            res.status(201).json({message: `Success updating ${updated.title}`, data: data})
+            redis.del(`movies-${id}`)
+            let edited = {
+                _id: id,
+                title: updated.title,
+                overview: updated.overview,
+                poster_path: updated.poster_path,
+                popularity: updated.popularity,
+                tags: updated.tags
+            }
+            if (data.acknowledged == true) {
+                return edited
+            } else {
+                return data
+            }
         })
         .catch(err => {
             console.log(err)       

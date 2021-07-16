@@ -13,16 +13,16 @@ class Controller {
         let redisSeries;
 
         redis.get("movies")
-        .then(movies => {
-            if (movies) {
+        .then(cahcedMovies => {
+            if (cahcedMovies) {
                 // console.log(movies, 'ADA MOVIES NYA')
-                redisMovies = movies
+                redisMovies = cahcedMovies
                 return redis.get("series")
             }
         })
-        .then(series => {
-            if (series) {
-                redisSeries = series
+        .then(cachedSeries => {
+            if (cachedSeries) {
+                redisSeries = cachedSeries
             }
             
             if (redisMovies && redisSeries) {

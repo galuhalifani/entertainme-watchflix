@@ -11,6 +11,17 @@ class SeriesController {
         })
     }
 
+    static findOne(req, res) {
+        let id = req.params.id
+        Series.findOne(id)
+        .then(series => {
+            res.json(series[0])
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
     static addSeries(req, res) {
         let newSeries = req.body    
         Series.addSeries(newSeries)

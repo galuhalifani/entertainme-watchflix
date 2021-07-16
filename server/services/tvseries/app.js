@@ -9,6 +9,7 @@ app.use(express.urlencoded({ extended: true })) // for parsing application/x-www
 
 // SERIES
 app.get('/tvseries', SeriesController.findAll)
+app.get('/tvseries/:id', SeriesController.findOne)
 app.post('/tvseries', SeriesController.addSeries)
 app.delete('/tvseries/:id', SeriesController.delete)
 app.put('/tvseries/:id', SeriesController.edit)

@@ -31,48 +31,105 @@ class SeriesController {
         })
     }
 
-    static addSeries(req, res) {
-        let series = req.body
-        axios({
+    static findOneSeries(id) {
+        return redis.get(`series-${id}`)
+        .then(serie => {
+            if (serie) {
+                // console.log('PAKE REDIS')
+                return JSON.parse(serie)
+            } else {
+                // console.log('GA PAKE REDIS')
+                return axios({
+                    url: `${baseUrl}/${id}`,
+                    method: 'get'
+                })
+                .then(({data}) => {
+                    redis.set(`series-${id}`, JSON.stringify(data))
+                    // console.log(data)
+                    return data
+                })
+                .catch(err => {
+                    return err   
+                })
+            }
+        })
+        .catch(err => {
+            return err
+        })
+    }
+
+    static addSeries(newSeries) {
+        let series = newSeries
+        return axios({
             url: `${baseUrl}`,
             method: 'post',
             data: series
         })
         .then(({data}) => {
             redis.del("series")
-            res.status(201).json({message: `Success adding series ${series.title}`, data: data})
+            let newData = {
+                _id: data.insertedId,
+                title: series.title,
+                overview: series.overview,
+                poster_path: series.poster_path,
+                popularity: series.popularity,
+                tags: series.tags
+            }
+            console.log(data)
+            return newData
         })
         .catch(err => {
             console.log(err)       
         })
     }
 
-    static deleteSeries(req, res) {
-        let id = req.params.id
-        axios({
-            url: `${baseUrl}/${id}`,
-            method: 'delete'
+    static deleteSeries(seriesId) {
+        let id = seriesId
+        let deletedSeries;
+        return SeriesController.findOneSeries(id)
+        .then((data) => {
+            if (data) {
+                deletedSeries = data
+                return axios({
+                    url: `${baseUrl}/${id}`,
+                    method: 'delete'
+                })
+            }
         })
-        .then(({data}) => {
+        .then(() => {
             redis.del("series")
-            res.status(201).json({message: `Success deleting series with ID ${id}`, data: data})
+            redis.del(`series-${id}`)
+            return deletedSeries
         })
         .catch(err => {
             console.log(err)       
         })
     }
 
-    static editSeries(req, res) {
-        let id = req.params.id
-        let updated = req.body
-        axios({
+    static editSeries(editedSeries, seriesId) {
+        let id = seriesId
+        let updated = editedSeries
+        return axios({
             url: `${baseUrl}/${id}`,
             method: 'put',
             data: updated
         })
         .then(({data}) => {
             redis.del("series")
-            res.status(201).json({message: `Success updating ${updated.title}`, data: data})
+            redis.del(`series-${id}`)
+            let edited = {
+                _id: id,
+                title: updated.title,
+                overview: updated.overview,
+                poster_path: updated.poster_path,
+                popularity: updated.popularity,
+                tags: updated.tags
+            }
+            if (data.acknowledged == true) {
+                return edited
+            } else {
+                return data
+            }
         })
         .catch(err => {
             console.log(err)       

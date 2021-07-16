@@ -11,6 +11,17 @@ class MovieController {
         })
     }
 
+    static findOne(req, res) {
+        let id = req.params.id
+        Movie.findOne(id)
+        .then(movies => {
+            res.json(movies[0])
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
     static addMovie(req, res) {
         let newMovie = req.body
         Movie.addMovie(newMovie)
