@@ -28,7 +28,7 @@ class MovieController {
             }
         })
         .catch(err => {
-            throw new ApolloError(`Failed fetching movie`, '500', err);   
+            throw new ApolloError(`Cache connection error`, '500', err);   
         })
     }
 
@@ -46,13 +46,16 @@ class MovieController {
                 })
                 .then(({data}) => {
                     redis.set(`movies-${id}`, JSON.stringify(data))
-                    console.log(data)
+                    // console.log(data)
                     return data
+                })
+                .catch(err => {
+                    throw new ApolloError(`Failed fetching movie`, '500', err);
                 })
             }
         })
         .catch(err => {
-            throw new ApolloError(`Failed fetching movie`, '500', err);
+            throw new ApolloError(`Cache connection error`, '500', err);
         })
     }
 
@@ -70,6 +73,8 @@ class MovieController {
         .catch(err => {
             if (err.response.data.error == 'Please fill in movie title') {
                 throw new UserInputError('Please fill in movie title', {status: '400'})
+            } else if (err.response.data.error) {
+                throw new ApolloError(`${err.response.data.error}`, '404', err)  
             } else {
                 throw new ApolloError('Failed Adding Movie', '500', err)
             }  
@@ -90,6 +95,8 @@ class MovieController {
         .catch(err => {
             if (err.response.data.error == 'movie not found') {
                 throw new ApolloError('Movie Not Found', '404')  
+            } else if (err.response.data.error) {
+                throw new ApolloError(`${err.response.data.error}`, '404', err)  
             } else if (err.isAxiosError == true) {
                 throw new ApolloError('Connection Error / Unknown Path', '500', err)  
             } else {
@@ -114,11 +121,11 @@ class MovieController {
         })
         .catch((err) => {
             if (err.response.data.error == 'movie not found') {
-                // console.log(err)
                 throw new ApolloError('Movie Not Found', '404')  
-                // throw new UserInputError('Movie Not Found', {status: '404'})
             } else if (err.response.data.error == 'Please fill in movie title') {
                 throw new UserInputError('Please fill in movie title', {status: '400'})  
+            } else if (err.response.data.error) {
+                throw new ApolloError(`${err.response.data.error}`, '404', err)  
             } else if (err.isAxiosError == true) {
                 throw new ApolloError('Connection Error / Unknown Path', '500', err)  
             } else {

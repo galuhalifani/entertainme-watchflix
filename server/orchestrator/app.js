@@ -1,9 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server');
-const axios = require('axios')
 const MovieController = require('./controllers/MovieController.js')
 const SeriesController = require('./controllers/SeriesController.js')
-const Redis = require("ioredis");
-const redis = new Redis();
 
 const typeDefs = gql`
 type Movie {
@@ -64,10 +61,10 @@ type Query {
 }
 
 type Mutation {
-    newMovie(input: NewMovie): Movie
-    newSeries(input: NewSeries): Series
-    editedMovie(input: EditedMovie, movieId: ID!): Movie
-    editedSeries(input: EditedSeries, seriesId: ID!): Series
+    newMovie(input: NewMovie!): Movie
+    newSeries(input: NewSeries!): Series
+    editedMovie(input: EditedMovie!, movieId: ID!): Movie
+    editedSeries(input: EditedSeries!, seriesId: ID!): Series
     deletedMovie(movieId: ID!): String
     deletedSeries(seriesId: ID!): String
 }
