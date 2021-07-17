@@ -7,6 +7,11 @@ class Movie {
         return movieCollection.find().toArray()
     }
 
+    static findOne(id) {
+        const movieCollection = getDatabase().collection('movies')
+        return movieCollection.find({_id: ObjectId(id)}).toArray()
+    }
+
     static addMovie(movie) {
         const movieCollection = getDatabase().collection('movies')
         return movieCollection.insertOne(movie)

@@ -21,7 +21,7 @@ class SeriesController {
                     res.status(200).json(data)
                 })
                 .catch(err => {
-                    console.log(err)       
+                    res.status(500).json({error: err})    
                 })                
             }
         })
@@ -39,7 +39,7 @@ class SeriesController {
             res.status(201).json({message: `Success adding series ${series.title}`, data: data})
         })
         .catch(err => {
-            console.log(err)       
+            res.status(500).json({error: err})      
         })
     }
 
@@ -54,7 +54,7 @@ class SeriesController {
             res.status(201).json({message: `Success deleting series with ID ${id}`, data: data})
         })
         .catch(err => {
-            console.log(err)       
+            res.status(500).json({error: err})     
         })
     }
 
@@ -71,7 +71,7 @@ class SeriesController {
             res.status(201).json({message: `Success updating ${updated.title}`, data: data})
         })
         .catch(err => {
-            console.log(err)       
+            res.status(500).json({error: err})     
         })
     }
 }

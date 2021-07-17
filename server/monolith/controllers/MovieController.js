@@ -4,45 +4,91 @@ class MovieController {
     static findAll(req, res) {
         Movie.findAll()
         .then(movies => {
-            res.json(movies)
+            res.status(200).json(movies)
         })
         .catch(err => {
-            console.log(err)
+            res.status(500).json({error: err})
+        })
+    }
+
+    static findOne(req, res) {
+        let id = req.params.id
+        Movie.findOne(id)
+        .then(movies => {
+            if (movies.length > 0) {
+                res.status(200).json(movies[0])
+            } else {
+                res.status(404).json({error: 'movie not found'})
+            }
+        })
+        .catch(err => {
+            res.status(500).json({error: err})
         })
     }
 
     static addMovie(req, res) {
         let newMovie = req.body
-        Movie.addMovie(newMovie)
-        .then((movie) => {
-            res.json({message: `success adding ${newMovie.title}!`, movie: movie})
-        })
-        .catch(err => {
-            console.log(err)
-        })
+        if (!newMovie.title) {
+            res.status(400).json({error: 'Please fill in movie title'})            
+        } else {
+            Movie.addMovie(newMovie)
+            .then(() => {
+                res.status(201).json(newMovie)
+            })
+            .catch(err => {
+                res.status(500).json({error: err})
+            })
+        }
     }
 
     static delete(req, res) {
         let id = req.params.id
-        Movie.delete(id)
-        .then((response) => {
-            res.json({message: `success deleting movie with ID ${id}!`, response: response})
+        let movie;
+        Movie.findOne(id)
+        .then((data) => {
+            if (data.length > 0) {
+                movie = {...data[0]}
+                return Movie.delete(id)
+                .then(() => {
+                    res.status(200).json(`Successfully deleted movie '${movie.title}'`)
+                })
+                .catch(err => {
+                    res.status(500).json({error: err})
+                })
+            } else {
+                res.status(404).json({error: 'movie not found'})
+            }
         })
         .catch(err => {
-            console.log(err)
+            res.status(500).json({error: err})
         })
     }
 
     static edit(req, res) {
         let id = req.params.id
         let editedData = req.body
-        Movie.edit(id, editedData)
-        .then((response) => {
-            res.json({message: `success editing ${editedData.title}!`, response: response})
-        })
-        .catch(err => {
-            console.log(err)
-        })
+        if (!editedData.title) {
+            res.status(400).json({error: 'Please fill in movie title'})            
+        } else {
+            Movie.findOne(id)
+            .then((data) => {
+                if (data.length > 0) {
+                    return Movie.edit(id, editedData)
+                    .then(() => {
+                        editedData._id = id
+                        res.status(200).json(editedData)
+                    })
+                    .catch(err => {
+                        res.status(500).json({error: err})
+                    })
+                } else {
+                    res.status(404).json({error: 'movie not found'})
+                }
+            })
+            .catch(err => {
+                res.status(500).json({error: err})
+            })
+        }
     }
 }
 

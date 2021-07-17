@@ -7,6 +7,11 @@ class Series {
         return seriesCollection.find().toArray()
     }
 
+    static findOne(id) {
+        const seriesCollection = getDatabase().collection('tvSeries')
+        return seriesCollection.find({_id: ObjectId(id)}).toArray()
+    }
+
     static addSeries(series) {
         const seriesCollection = getDatabase().collection('tvSeries')
         return seriesCollection.insertOne(series)

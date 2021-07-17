@@ -14,12 +14,14 @@ app.get('/', (req, res) => {
 
 // MOVIES
 app.get('/movies', MovieController.findAll)
+app.get('/movies/:id', MovieController.findOne)
 app.post('/movies', MovieController.addMovie)
 app.delete('/movies/:id', MovieController.delete)
 app.put('/movies/:id', MovieController.edit)
 
 // SERIES
 app.get('/tvseries', SeriesController.findAll)
+app.get('/tvseries/:id', SeriesController.findOne)
 app.post('/tvseries', SeriesController.addSeries)
 app.delete('/tvseries/:id', SeriesController.delete)
 app.put('/tvseries/:id', SeriesController.edit)

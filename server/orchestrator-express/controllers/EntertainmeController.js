@@ -43,7 +43,7 @@ class Controller {
                     res.status(200).json({movies: movies, tvSeries: series})
                 })
                 .catch(err => {
-                    console.log(err)       
+                    res.status(500).json({error: err})       
                 })
             } else if (!redisSeries && redisMovies) {
                 // console.log('MOVIES REDIS')
@@ -58,7 +58,7 @@ class Controller {
                     res.status(200).json({movies: movies, tvSeries: series})
                 })
                 .catch(err => {
-                    console.log(err)       
+                    res.status(500).json({error: err})       
                 })
             } else {
                 // console.log('ALL FETCH AXIOS')
@@ -80,12 +80,12 @@ class Controller {
                     res.status(200).json({movies: movies, tvSeries: series})
                 })
                 .catch(err => {
-                    console.log(err)       
+                    res.status(500).json({error: err})       
                 })            
             }
         })
         .catch(err => {
-            console.log(err)
+            res.status(500).json({error: err}) 
         })            
     }        
 }
