@@ -39,7 +39,11 @@ class SeriesController {
             res.status(201).json({message: `Success adding series ${series.title}`, data: data})
         })
         .catch(err => {
-            res.status(500).json({error: err})      
+            if (err.response.data) {
+                res.status(400).json({error: err.response.data})     
+            } else {
+                res.status(500).json({error: err}) 
+            }  
         })
     }
 
@@ -54,7 +58,11 @@ class SeriesController {
             res.status(201).json({message: `Success deleting series with ID ${id}`, data: data})
         })
         .catch(err => {
-            res.status(500).json({error: err})     
+            if (err.response.data) {
+                res.status(404).json({error: err.response.data})     
+            } else {
+                res.status(500).json({error: err}) 
+            }
         })
     }
 
@@ -71,7 +79,13 @@ class SeriesController {
             res.status(201).json({message: `Success updating ${updated.title}`, data: data})
         })
         .catch(err => {
-            res.status(500).json({error: err})     
+            if (err.response.data.error == 'Please fill in series title') {
+                res.status(400).json({error: err.response.data})     
+            } else if (err.response.data) {
+                res.status(404).json({error: err.response.data})    
+            } else {
+                res.status(500).json({error: err}) 
+            }
         })
     }
 }
