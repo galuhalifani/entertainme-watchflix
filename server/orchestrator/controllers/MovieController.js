@@ -1,4 +1,5 @@
 const axios = require('axios')
+const { ApolloError, UserInputError } = require('apollo-server');
 const Redis = require("ioredis");
 const redis = new Redis();
 
@@ -22,12 +23,12 @@ class MovieController {
                     return data
                 })
                 .catch(err => {
-                    return err   
+                    throw new ApolloError(`Failed fetching movie`, '500', err);      
                 })
             }
         })
         .catch(err => {
-            return err
+            throw new ApolloError(`Failed fetching movie`, '500', err);   
         })
     }
 
@@ -48,13 +49,10 @@ class MovieController {
                     console.log(data)
                     return data
                 })
-                .catch(err => {
-                    return err   
-                })
             }
         })
         .catch(err => {
-            return err
+            throw new ApolloError(`Failed fetching movie`, '500', err);
         })
     }
 
@@ -67,50 +65,43 @@ class MovieController {
         })
         .then(({data}) => {
             redis.del("movies")
-            let newData = {
-                _id: data.insertedId,
-                title: movie.title,
-                overview: movie.overview,
-                poster_path: movie.poster_path,
-                popularity: movie.popularity,
-                tags: movie.tags
-            }
-            return newData
+            return data
         })
         .catch(err => {
-            console.log(err)       
-            return err
+            if (err.response.data.error == 'Please fill in movie title') {
+                throw new UserInputError('Please fill in movie title', {status: '400'})
+            } else {
+                throw new ApolloError('Failed Adding Movie', '500', err)
+            }  
         })
     }
 
     static deleteMovie(movieId) {
         let id = movieId
-        let deletedMovie;
-        return MovieController.findOneMovie(id)
-        .then((data) => {
-            if (data) {
-                // console.log(data)
-                deletedMovie = data
-                return axios({
-                    url: `${baseUrl}/${id}`,
-                    method: 'delete'
-                })    
-            }
-        })  
-        .then(() => {
+        return axios({
+            url: `${baseUrl}/${id}`,
+            method: 'delete'
+        })    
+        .then(({data}) => {
             redis.del("movies")
             redis.del(`movies-${id}`)
-            return deletedMovie
+            return data
         })
         .catch(err => {
-            console.log(err)       
-            return err
+            if (err.response.data.error == 'movie not found') {
+                throw new ApolloError('Movie Not Found', '404')  
+            } else if (err.isAxiosError == true) {
+                throw new ApolloError('Connection Error / Unknown Path', '500', err)  
+            } else {
+                throw new ApolloError('Error Deleting Movie', '500', err)  
+            }
         })
     }
 
     static editMovie(editedMovie, movieId) {
         let id = movieId
         let updated = editedMovie
+        // console.log('UPDATED', updated)
         return axios({
             url: `${baseUrl}/${id}`,
             method: 'put',
@@ -119,22 +110,20 @@ class MovieController {
         .then(({data}) => {
             redis.del("movies")
             redis.del(`movies-${id}`)
-            let edited = {
-                _id: id,
-                title: updated.title,
-                overview: updated.overview,
-                poster_path: updated.poster_path,
-                popularity: updated.popularity,
-                tags: updated.tags
-            }
-            if (data.acknowledged == true) {
-                return edited
-            } else {
-                return data
-            }
+            return data
         })
-        .catch(err => {
-            console.log(err)       
+        .catch((err) => {
+            if (err.response.data.error == 'movie not found') {
+                // console.log(err)
+                throw new ApolloError('Movie Not Found', '404')  
+                // throw new UserInputError('Movie Not Found', {status: '404'})
+            } else if (err.response.data.error == 'Please fill in movie title') {
+                throw new UserInputError('Please fill in movie title', {status: '400'})  
+            } else if (err.isAxiosError == true) {
+                throw new ApolloError('Connection Error / Unknown Path', '500', err)  
+            } else {
+                throw new ApolloError('Error Editing Movie', '500', err)  
+            }
         })
     }
 }

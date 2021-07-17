@@ -1,6 +1,7 @@
 const axios = require('axios')
 const Redis = require("ioredis");
 const redis = new Redis();
+const { ApolloError, UserInputError } = require('apollo-server');
 
 let baseUrl = 'http://localhost:4002/tvseries'
 
@@ -22,12 +23,12 @@ class SeriesController {
                     return data
                 })
                 .catch(err => {
-                    return err   
+                    throw new ApolloError(`Failed fetching series`, '500', err);   
                 })
             }
         })
         .catch(err => {
-            return err
+            throw new ApolloError(`Failed fetching series`, '500', err);   
         })
     }
 
@@ -54,7 +55,7 @@ class SeriesController {
             }
         })
         .catch(err => {
-            return err
+            throw new ApolloError(`Failed fetching series`, '500', err);
         })
     }
 
@@ -67,19 +68,14 @@ class SeriesController {
         })
         .then(({data}) => {
             redis.del("series")
-            let newData = {
-                _id: data.insertedId,
-                title: series.title,
-                overview: series.overview,
-                poster_path: series.poster_path,
-                popularity: series.popularity,
-                tags: series.tags
-            }
-            console.log(data)
-            return newData
+            return data
         })
         .catch(err => {
-            console.log(err)       
+            if (err.response.data.error == 'Please fill in series title') {
+                throw new UserInputError('Please fill in series title', {status: '400'})
+            } else {
+                throw new ApolloError('Failed Adding Series', '500', err)
+            }   
         })
     }
 
@@ -96,13 +92,19 @@ class SeriesController {
                 })
             }
         })
-        .then(() => {
+        .then(({data}) => {
             redis.del("series")
             redis.del(`series-${id}`)
-            return deletedSeries
+            return data
         })
         .catch(err => {
-            console.log(err)       
+            if (err.response.data.error == 'series not found') {
+                throw new ApolloError('Series Not Found', '404')  
+            } else if (err.isAxiosError == true) {
+                throw new ApolloError('Connection Error / Unknown Path', '500', err)  
+            } else {
+                throw new ApolloError('Error Deleting Series', '500', err)  
+            }        
         })
     }
 
@@ -117,22 +119,20 @@ class SeriesController {
         .then(({data}) => {
             redis.del("series")
             redis.del(`series-${id}`)
-            let edited = {
-                _id: id,
-                title: updated.title,
-                overview: updated.overview,
-                poster_path: updated.poster_path,
-                popularity: updated.popularity,
-                tags: updated.tags
-            }
-            if (data.acknowledged == true) {
-                return edited
-            } else {
-                return data
-            }
+            return data
         })
         .catch(err => {
-            console.log(err)       
+            if (err.response.data.error == 'series not found') {
+                // console.log(err)
+                throw new ApolloError('Series Not Found', '404')  
+                // throw new UserInputError('Movie Not Found', {status: '404'})
+            } else if (err.response.data.error == 'Please fill in series title') {
+                throw new UserInputError('Please fill in series title', {status: '400'})  
+            } else if (err.isAxiosError == true) {
+                throw new ApolloError('Connection Error / Unknown Path', '500', err)  
+            } else {
+                throw new ApolloError('Error Editing Series', '500', err)  
+            }     
         })
     }
 }

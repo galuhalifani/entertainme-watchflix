@@ -16,7 +16,7 @@ app.put('/movies/:id', MovieController.edit)
 
 connect()
 .then(async (db) => {
-    console.log('Connected successfully to server', db)
+    console.log('Connected successfully to server')
 
     app.listen(port, () => {
         console.log(`Example app listening at http://localhost:${port}`)

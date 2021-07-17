@@ -56,14 +56,6 @@ input EditedSeries {
     tags: [String]
 }
 
-type DeletedMovie {
-    title: String
-    overview: String
-    poster_path: String
-    popularity: Float
-    tags: [String]
-}
-
 type Query {
     movies: [Movie]
     movieById(id: ID!): Movie
@@ -72,12 +64,12 @@ type Query {
 }
 
 type Mutation {
-    newMovie(newMovie: NewMovie): Movie
-    newSeries(newSeries: NewSeries): Series
-    editedMovie(editedMovie: EditedMovie, movieId: ID!): Movie
-    editedSeries(editedSeries: EditedSeries, seriesId: ID!): Series
-    deletedMovie(movieId: ID!): Movie
-    deletedSeries(seriesId: ID!): Series
+    newMovie(input: NewMovie): Movie
+    newSeries(input: NewSeries): Series
+    editedMovie(input: EditedMovie, movieId: ID!): Movie
+    editedSeries(input: EditedSeries, seriesId: ID!): Series
+    deletedMovie(movieId: ID!): String
+    deletedSeries(seriesId: ID!): String
 }
 `
 
@@ -101,20 +93,20 @@ const resolvers = {
     },
     Mutation: {
         newMovie(_, args) {
-            const {newMovie} = args
-            return MovieController.addMovies(newMovie)
+            const {input} = args
+            return MovieController.addMovies(input)
         },
         newSeries(_, args) {
-            const {newSeries} = args
-            return SeriesController.addSeries(newSeries)
+            const {input} = args
+            return SeriesController.addSeries(input)
         },
         editedMovie(_, args) {
-            const {editedMovie, movieId} = args
-            return MovieController.editMovie(editedMovie, movieId)
+            const {input, movieId} = args
+            return MovieController.editMovie(input, movieId)
         },
         editedSeries(_, args) {
-            const {editedSeries, seriesId} = args
-            return SeriesController.editSeries(editedSeries, seriesId)
+            const {input, seriesId} = args
+            return SeriesController.editSeries(input, seriesId)
         },
         deletedMovie(_, args) {
             const {movieId} = args
