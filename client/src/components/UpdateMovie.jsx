@@ -6,11 +6,19 @@ import { useAlert } from 'react-alert'
 import swal from '@sweetalert/with-react'
 import { useQuery, useMutation } from '@apollo/client'
 import { GET_MOVIE_BY_ID, UPDATE_MOVIE } from '../graphql/query'
+import { favouriteVar } from '../graphql/vars.js';
 import '../App.css';
 
 export default function UpdateMovie(props) {
+    const alert = useAlert()
     const movieId = useParams().id
     const history = useHistory()
+    const [movieTitle, setMovieTitle] = useState('')
+    const [title, setTitle] = useState('')
+    const [overview, setOverview] = useState('')
+    const [poster, setPoster] = useState('')
+    const [tags, setTags] = useState('')
+    const [popularity, setPopularity] = useState('')
 
     const {loading, error, data, refetch} = useQuery(GET_MOVIE_BY_ID, {
         variables: {
@@ -20,6 +28,26 @@ export default function UpdateMovie(props) {
 
     const [editMovie, { loading: mutationLoading, error: mutationError, data: updatedMovie }] = useMutation(UPDATE_MOVIE, {
         onCompleted: (updatedMovie) => {
+
+            // update favourite data
+            const previousFav = favouriteVar()
+            const newFav = {
+                id: movieId,
+                title: title,
+                overview: overview,
+                poster_path: poster,
+                popularity: popularity,
+                tags: tags
+            }
+
+            for (let i = 0; i < previousFav.length; i++) {
+                if (previousFav[i].id == movieId) {
+                    previousFav.splice(i, 1, newFav)
+                    favouriteVar([...previousFav])
+                }
+            }
+
+            // alert
             swal({
                 title: "Success!",
                 text: `Movie ${updatedMovie.editedMovie.title} updated`,
@@ -37,29 +65,31 @@ export default function UpdateMovie(props) {
     function updateMovie(e) {
         e.preventDefault()
 
-        editMovie({
-            variables: {
-                movie: {
-                    "title": title,
-                    "overview": overview,
-                    "popularity": popularity,
-                    "poster_path": poster,
-                    "tags": tags
+        if (overview.length > 500 || title.length > 70) {
+            if (overview.length > 500) {
+                alert.error(`Max. length for overview is 500 characters`)
+            }
+            if (title.length > 70) {
+                alert.error(`Max. length for title is 70 characters`)
+            }
+        } else {
+            editMovie({
+                variables: {
+                    movie: {
+                        "title": title,
+                        "overview": overview,
+                        "popularity": popularity,
+                        "poster_path": poster,
+                        "tags": tags
+                    },
+                    id: movieId
                 },
-                id: movieId
-            },
-            refetchQueries: [{
-                query: GET_MOVIE_BY_ID, variables: {id: movieId}
-            }]
-        })
+                refetchQueries: [{
+                    query: GET_MOVIE_BY_ID, variables: {id: movieId}
+                }]
+            })
+        }
     }
-
-    const [movieTitle, setMovieTitle] = useState('')
-    const [title, setTitle] = useState('')
-    const [overview, setOverview] = useState('')
-    const [poster, setPoster] = useState('')
-    const [tags, setTags] = useState('')
-    const [popularity, setPopularity] = useState('')
 
     useEffect(() => {
         if (data) {

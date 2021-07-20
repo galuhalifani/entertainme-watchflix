@@ -59,46 +59,55 @@ export default function AddMovie(props) {
         e.preventDefault()
         let arrayTags = tags.split(',')
 
-        addMovie({
-          variables: {
-              newMovie: {
-                "title": title,
-                "overview": overview,
-                "poster_path": poster, 
-                "popularity": +popularity,
-                "tags": tags.split(',')
-            }
-          },
-          refetchQueries: [{
-            query: GET_HOME_DATA
-        }] 
-        })
-        .then(data => {
-          let movie = data.data
-          // console.log(movie)
-          if (movie) {
-            // console.log(movie, 'DATA')
-            swal({
-              title: "Success!",
-              text: `Movie ${movie.newMovie.title} added`,
-              icon: "success",
-              button: 'Back to Home'
-            })
-            .then((action) => {
-                if (action) {
-                    history.push(`/`)
-                }        
-            })
-          } 
-          else {
-            if (data.errors.networkError) {
-              console.log(data.errors.networkError.result.errors[0].message, 'DATA')
-            }  
+        if (overview.length > 500 || title.length > 70) {
+          if (overview.length > 500) {
+              alert.error(`Max. length for overview is 500 characters`)
           }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+          if (title.length > 70) {
+              alert.error(`Max. length for title is 70 characters`)
+          }
+        } else {
+          addMovie({
+            variables: {
+                newMovie: {
+                  "title": title,
+                  "overview": overview,
+                  "poster_path": poster, 
+                  "popularity": +popularity,
+                  "tags": tags.split(',')
+              }
+            },
+            refetchQueries: [{
+              query: GET_HOME_DATA
+          }] 
+          })
+          .then(data => {
+            let movie = data.data
+            // console.log(movie)
+            if (movie) {
+              // console.log(movie, 'DATA')
+              swal({
+                title: "Success!",
+                text: `Movie ${movie.newMovie.title} added`,
+                icon: "success",
+                button: 'Back to Home'
+              })
+              .then((action) => {
+                  if (action) {
+                      history.push(`/`)
+                  }        
+              })
+            } 
+            else {
+              if (data.errors.networkError) {
+                console.log(data.errors.networkError.result.errors[0].message, 'DATA')
+              }  
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
+        }
     }
 
     return (

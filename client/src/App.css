@@ -119,7 +119,7 @@ body {
 }
 
 .overflow-ellipsis-title {
-  overflow: hidden;
+  overflow: hidden!important;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -160,9 +160,17 @@ body {
   -webkit-box-orient: vertical;
 }
 
+.movieFavDescription {
+  /* height: 100px; */
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+}
+
 .movieCol:hover {
   border: 8px solid black;
-  /* background-color: green; */
   opacity: 100%;
 }
 
@@ -173,16 +181,35 @@ body {
   transform: scale(1.2)
 }
 
+.cardImgFav {
+  max-height:300px;
+  object-fit:cover;
+  object-position:top
+}
+
+.cardImgFav:hover {
+  margin-top: auto;
+  margin-bottom: auto;
+  object-fit: scale-down;
+  transform: scale(1.5)
+}
+
 .movieCol:hover .movieDescription {
   text-overflow: unset;
   overflow: visible;
-  display: inline-flex
+  display: block
+}
+
+.movieCol:hover .movieFavDescription {
+  text-overflow: unset;
+  overflow: visible;
+  display: block
 }
 
 .movieCol:hover .title {
   text-overflow: unset;
   overflow: visible;
-  display: inline-flex
+  display: block
 }
 
 .addForm h1 {
