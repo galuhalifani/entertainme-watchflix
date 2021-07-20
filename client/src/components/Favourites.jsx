@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Card, Row, Col } from 'react-bootstrap'
-import { useHistory } from "react-router-dom";
-import { useAlert } from 'react-alert'
 import { favouriteVar } from '../graphql/vars';
 import { useReactiveVar } from '@apollo/client';
 import '../App.css';

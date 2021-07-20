@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useHistory } from "react-router-dom";
 import { useAlert } from 'react-alert'
 import { ADD_MOVIE, GET_HOME_DATA } from '../graphql/query'
@@ -7,7 +7,6 @@ import swal from '@sweetalert/with-react'
 import '../App.css';
 
 export default function AddMovie(props) {
-    const showAlert = useAlert()
     const history = useHistory()
     const [title, setTitle] = useState('')
     const [overview, setOverview] = useState('')

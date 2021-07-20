@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Card, Row, Col } from 'react-bootstrap'
 import Loader from "../fillers/Loader.jsx";
 import Error from "../fillers/Error.jsx";
-import NoData from "../fillers/NoData.jsx";
-import swal from '@sweetalert/with-react'
 import { useHistory } from "react-router-dom";
 import { useAlert } from 'react-alert'
-import { useQuery, useMutation } from '@apollo/client'
-import { GET_HOME_DATA, DELETE_MOVIE } from '../graphql/query'
+import { useQuery } from '@apollo/client'
+import { GET_HOME_DATA } from '../graphql/query'
 import MovieCard from './MovieCard.jsx';
 import '../App.css';
 
@@ -39,14 +37,14 @@ export default function Home(props) {
                 <Row className='movieCard' xs={2} md={3} lg={4} className="g-4" style={{paddingLeft:'5%', paddingRight: '5%', paddingBottom: '10px'}}>            
             {
                 data.movies.map(movie => 
-                    <MovieCard movie={movie}/>
+                    <MovieCard key={movie._id} movie={movie}/>
             )} 
                 </Row>
                 <h2 style={{paddingLeft: '5%', paddingTop: '5px', paddingBottom: '5px', marginLeft: '1%', marginRight: '3%', backgroundColor: '#231c03', borderRadius: '5px'}}>TV Series</h2>
                 <Row className='movieCard' xs={2} md={3} lg={4} className="g-4" style={{paddingLeft:'5%', paddingRight: '5%', paddingBottom: '10px'}}>            
             {
                 data.tvSeries.map(series => 
-                    <Col className='movieCol' style={{marginBottom:'2%', marginTop: '2%', maxWidth: '100%', paddingRight: '10px'}}>
+                    <Col key={series._id} className='movieCol' style={{marginBottom:'2%', marginTop: '2%', maxWidth: '100%', paddingRight: '10px'}}>
                     <Card className='cardCol d-flex' style={{backgroundColor: 'black', flexDirection: 'row', border: '2px solid #eae0aa', marginRight:'5px'}}>
                         <img className='cardImg' style={{height: '20rem', maxWidth: '210px', objectFit: 'cover'}} src={series.poster_path} alt="Playlist Poster"/>
                         <Card.Body className='cardbody' style={{width: '200px'}}> 

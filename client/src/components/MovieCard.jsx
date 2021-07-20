@@ -1,42 +1,71 @@
 import React, { useState, useEffect } from 'react'
-import { Card, Row, Col } from 'react-bootstrap'
-import Loader from "../fillers/Loader.jsx";
-import Error from "../fillers/Error.jsx";
-import NoData from "../fillers/NoData.jsx";
-import swal from '@sweetalert/with-react'
+import { Card, Col } from 'react-bootstrap'
 import { useHistory } from "react-router-dom";
 import { useAlert } from 'react-alert'
-import { useQuery, useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 import { GET_HOME_DATA, DELETE_MOVIE } from '../graphql/query'
 import { favouriteVar } from '../graphql/vars.js';
+import { useReactiveVar } from '@apollo/client';
 import '../App.css';
 
 export default function MovieCard({movie}) {
     const alert = useAlert()
     const history = useHistory()
-
-    function addToFavourite(e) {
-        e.preventDefault()
-
-        const previousFav = favouriteVar()
-        const newFav = {
-            id: movie._id,
-            title: movie.title,
-            overview: movie.overview,
-            poster_path: movie.poster_path,
-            popularity: movie.popularity,
-            tags: movie.tags
-        }
-
-        favouriteVar([...previousFav, newFav])
-    }
-
+    const favourites = useReactiveVar(favouriteVar)
+    const [bookmarked, setBookmarked] = useState(false)
+    
     const [deleteMov, {}] = useMutation(DELETE_MOVIE, {
         onError: (err) => {
             console.log(err, 'ERR')
             alert.error(`${err}`)
         }
     });
+
+    useEffect(() => {
+        for (let i = 0; i < favourites.length; i++) {
+            if (favourites[i].id == movie._id) {
+                setBookmarked(true)
+            }
+        }
+    }, [bookmarked])
+
+    function addToFavourite(e) {
+        e.preventDefault()
+
+        const previousFav = favouriteVar()
+
+        if (previousFav.length == 0) {
+            const newFav = {
+                id: movie._id,
+                title: movie.title,
+                overview: movie.overview,
+                poster_path: movie.poster_path,
+                popularity: movie.popularity,
+                tags: movie.tags
+            }
+    
+            favouriteVar([...previousFav, newFav])
+            setBookmarked(true)
+            alert.success(`Success: ${movie.title} added to favourites`)
+        } else {
+            if (bookmarked) {
+                alert.error(`Error: ${movie.title} has already been bookmarked`)
+            } else {
+                    const newFav = {
+                        id: movie._id,
+                        title: movie.title,
+                        overview: movie.overview,
+                        poster_path: movie.poster_path,
+                        popularity: movie.popularity,
+                        tags: movie.tags
+                    }
+            
+                    favouriteVar([...previousFav, newFav])
+                    setBookmarked(true)
+                    alert.success(`Success: ${movie.title} added to favourites`)
+                }
+            } 
+        }
 
     function editMovie(e, id, title) {
         e.preventDefault()
@@ -82,7 +111,7 @@ export default function MovieCard({movie}) {
                         <p className='tooltiptext'>{movie.title}</p>
                     </Card.Title>
                         <a href="/">
-                            <i className={'far fa-bookmark'} style={{marginRight: '5px'}} onClick={(e) => addToFavourite(e)}></i>
+                            <i className={bookmarked ? 'fas fa-bookmark' : 'far fa-bookmark'} style={{marginRight: '5px'}} onClick={(e) => addToFavourite(e)}></i>
                         </a>
                 </div>
 
