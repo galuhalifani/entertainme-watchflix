@@ -56,7 +56,6 @@ export default function AddMovie(props) {
 
     function addNewMovie(e) {
         e.preventDefault()
-        let arrayTags = tags.split(',')
 
         if (overview.length > 500 || title.length > 70) {
           if (overview.length > 500) {
