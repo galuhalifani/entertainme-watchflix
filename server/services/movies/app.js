@@ -1,7 +1,7 @@
 const { connect } = require ('./config/mongodb.js')
 const express = require('express')
 const app = express()
-const port = 4001
+const port = process.env.PORT || 4001
 const MovieController = require ('./controllers/MovieController')
 
 app.use(express.json()) // for parsing application/json
