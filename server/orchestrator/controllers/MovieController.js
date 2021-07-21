@@ -8,6 +8,7 @@ const redis = new Redis({
 });
 
 let baseUrl = 'http://18.210.18.107:4001/movies'
+// let baseUrl = 'http://localhost:4001/movies'
 
 class MovieController {
     static findAllMovies() {
@@ -64,13 +65,18 @@ class MovieController {
     }
 
     static addMovies(newMovie) {
+        console.log('invoc function')
         let movie = newMovie
+
+        console.log(movie, 'MOVIE')
         return axios({
             url: `${baseUrl}`,
             method: 'post',
             data: movie
         })
         .then(({data}) => {
+            console.log('masuk then')
+            console.log(data, 'DATA')
             redis.del("movies")
             return data
         })
