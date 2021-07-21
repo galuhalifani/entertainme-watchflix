@@ -7,8 +7,8 @@ const redis = new Redis({
 });
 const { ApolloError, UserInputError } = require('apollo-server');
 
-let baseUrl = 'http://44.192.96.163:4002/tvSeries'
-// let baseUrl = 'http://localhost:4002/tvSeries'
+// let baseUrl = 'http://44.192.96.163:4002/tvSeries'
+let baseUrl = 'http://localhost:4002/tvSeries'
 
 class SeriesController {
     static findAllTvSeries() {
