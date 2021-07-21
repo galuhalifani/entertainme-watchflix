@@ -7,7 +7,7 @@ const redis = new Redis({
     password: 'Njfl3TKiWk0uYkEKSnsOtftMFpe3ltYm'
 });
 
-let baseUrl = 'http://localhost:4001/movies'
+let baseUrl = 'http://18.210.18.107:4001/movies'
 
 class MovieController {
     static findAllMovies() {
