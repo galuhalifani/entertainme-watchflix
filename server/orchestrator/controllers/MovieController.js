@@ -1,7 +1,11 @@
 const axios = require('axios')
 const { ApolloError, UserInputError } = require('apollo-server');
 const Redis = require("ioredis");
-const redis = new Redis();
+const redis = new Redis({
+    host: 'redis-10199.c82.us-east-1-2.ec2.cloud.redislabs.com',
+    port: 10199,
+    password: 'Njfl3TKiWk0uYkEKSnsOtftMFpe3ltYm'
+});
 
 let baseUrl = 'http://localhost:4001/movies'
 
