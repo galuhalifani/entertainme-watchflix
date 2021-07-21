@@ -1,6 +1,6 @@
 const { MongoClient } = require("mongodb");
 
-const url = 'mongodb://localhost:27017'
+const url = 'mongodb+srv://galuhalifani:galuhmongo@entertainme-server.jcbm3.mongodb.net/entertainmedb?retryWrites=true&w=majority'
 
 let database = null
 
