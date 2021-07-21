@@ -17,7 +17,7 @@ export default function AddMovie(props) {
     const [addMovie, { loading: mutationLoading, error: mutationError, data: addedMovie }] = useMutation(ADD_MOVIE, {
       errorPolicy: 'none',
       onError: (err) => {
-        console.log(err)
+        console.log(err, 'ERR')
         if (err == `Error: Response not successful: Received status code 400`) {
           swal({
             title: "Error",
@@ -80,10 +80,12 @@ export default function AddMovie(props) {
           }] 
           })
           .then(data => {
+            console.log('BERHASIL')
+            console.log(data)
             let movie = data.data
             // console.log(movie)
             if (movie) {
-              // console.log(movie, 'DATA')
+              console.log(movie, 'DATA')
               swal({
                 title: "Success!",
                 text: `Movie ${movie.newMovie.title} added`,
