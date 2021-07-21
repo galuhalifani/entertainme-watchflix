@@ -103,7 +103,7 @@ export default function MovieCard({movie}) {
     return (
         <Col className='movieCol' style={{marginBottom:'2%', marginTop: '2%', maxWidth: '100%', paddingRight: '10px'}}>
         <Card className='cardCol d-flex' style={{backgroundColor: 'black', flexDirection: 'row', border: '2px solid #eae0aa', marginRight:'5px'}}>
-            <img className='cardImg' style={{height: '20rem', maxWidth: '210px', objectFit: 'cover'}} src={movie.poster_path} alt="Playlist Poster"/>
+            <img className='cardImg' style={{height: '20rem', maxWidth: '190px', objectFit: 'cover'}} src={movie.poster_path} alt="Playlist Poster"/>
             <Card.Body className='cardbody'> 
 
                 <div className="d-flex justify-content-between">
