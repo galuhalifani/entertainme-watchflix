@@ -3,11 +3,9 @@ const express = require('express')
 const app = express()
 const port = process.env.PORT || 4001
 const MovieController = require ('./controllers/MovieController')
-var cors = require('cors')
 
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-app.use(cors())
 
 // MOVIES
 app.get('/movies', MovieController.findAll)
