@@ -46,8 +46,8 @@ export default function Home(props) {
                 data.tvSeries.map(series => 
                     <Col key={series._id} className='movieCol' style={{marginBottom:'2%', marginTop: '2%', maxWidth: '100%', paddingRight: '10px'}}>
                     <Card className='cardCol d-flex' style={{backgroundColor: 'black', flexDirection: 'row', border: '2px solid #eae0aa', marginRight:'5px'}}>
-                        <img className='cardImg' style={{height: '20rem', maxWidth: '210px', objectFit: 'cover'}} src={series.poster_path} alt="Playlist Poster"/>
-                        <Card.Body className='cardbody' style={{width: '200px'}}> 
+                        <img className='cardImg' style={{height: '20rem', maxWidth: '190px', objectFit: 'cover'}} src={series.poster_path} alt="Playlist Poster"/>
+                        <Card.Body className='cardbody'> 
 
                             <div className="d-flex justify-content-between">
                                 <Card.Title className='title overflow-ellipsis-title' style={{fontSize: '22px'}}>{series.title}

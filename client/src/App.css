@@ -140,7 +140,7 @@ body {
 }
 
 .cardbody {
-  width: 200px!important
+  width: 190px!important
 }
 
 .movieCol:hover .editDelete {
@@ -171,7 +171,7 @@ body {
 
 .movieCol:hover {
   border: 8px solid black;
-  opacity: 100%;
+  /* opacity: 100%; */
 }
 
 .movieCol:hover .cardImg {
@@ -222,8 +222,8 @@ body {
 }
 
 .main_content {
-    margin-left: 5%;
-    margin-right: 5%;
+    margin-left: 3%;
+    margin-right: 3%;
     /* width: 100%; */
     margin-bottom: 40px;
     justify-content: space-between;
