@@ -169,10 +169,10 @@ body {
   -webkit-box-orient: vertical;
 }
 
-/* .movieCol:hover {
+.movieCol:hover {
   border: 8px solid black;
-  opacity: 100%;
-} */
+  /* opacity: 100%; */
+}
 
 .movieCol:hover .cardImg {
   margin-top: auto;
